@@ -46,7 +46,7 @@ class BundleProductDetailsPage extends StatelessWidget {
                   ),
                   const PriceAndQuantityRow(
                     currentPrice: 20,
-                    orginalPrice: 30,
+                    // orginalPrice: 30,
                     quantity: 2,
                   ),
                   const SizedBox(height: AppDefaults.padding / 2),
@@ -54,10 +54,10 @@ class BundleProductDetailsPage extends StatelessWidget {
                   const PackDetails(),
                   const ReviewRowButton(totalStars: 5),
                   const Divider(thickness: 0.1),
-                  BuyNowRow(
-                    onBuyButtonTap: () {},
-                    onCartButtonTap: () {},
-                  ),
+                  // BuyNowRow(
+                  //   onBuyButtonTap: () {},
+                  //   onCartButtonTap: () {},
+                  // ),
                 ],
               ),
             ),

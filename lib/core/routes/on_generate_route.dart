@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:produce_pos/core/routes/landing_route.dart';
+import 'package:produce_pos/modules/auth/views/registration_from.dart';
 
 import '../../modules/auth/views/forget_password_page.dart';
 import '../../modules/auth/views/intro_login_page.dart';
@@ -53,6 +55,10 @@ import 'unknown_page.dart';
 class RouteGenerator {
   static final List<GetPage> pages = [
     GetPage(
+        name: AppRoutes.landingRoute,
+        page: () => LandingRoute(),
+        transition: Transition.cupertino),
+    GetPage(
         name: AppRoutes.introLogin,
         page: () => const IntroLoginPage(),
         transition: Transition.cupertino),
@@ -64,6 +70,12 @@ class RouteGenerator {
         name: AppRoutes.entryPoint,
         page: () => const EntryPointUI(),
         transition: Transition.cupertino),
+    GetPage(
+        name: AppRoutes.registrationForm
+        ,
+        page: () => const RegistrationFrom(),
+        transition: Transition.cupertino),
+
     GetPage(
         name: AppRoutes.search,
         page: () => const SearchPage(),
@@ -238,7 +250,7 @@ class RouteGenerator {
         transition: Transition.cupertino),
     // Handle unknown route
     GetPage(
-        name: '/error',
+        name: '/errorPage',
         page: () => const UnknownPage(),
         transition: Transition.cupertino),
   ];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:produce_pos/data/models/product_model.dart';
 
 import '../../../core/components/app_back_button.dart';
 import '../../../core/components/bundle_tile_square.dart';
@@ -33,7 +34,18 @@ class PopularPackPage extends StatelessWidget {
                 itemCount: 8,
                 itemBuilder: (context, index) {
                   return BundleTileSquare(
-                    data: Dummy.bundles.first,
+                    product: Product(
+                        productId: 0,
+                        productName: " productName",
+                        description: "description",
+                        price: 12,
+                        productTypeId:123,
+                        productAvailable: true,
+                        currencyId: "123",
+                        carouselImages: "carousel_images",
+                        color: 123,
+                        productCategoryId:0,
+                        popularityScore: 0),
                   );
                 },
               ),

@@ -6,6 +6,9 @@ class AppImages {
 
   /* <---- Image used on unknown page -----> */
   static const illustrations404 = 'https://i.imgur.com/SGTzEiC.png';
+  /* <---- LOGIN Illustration IMAGES -----> */
+  static const loginIllustration1 = 'assets/images/login.svg';
+  static const loginIllustration2 = 'assets/images/login2.svg';
 
   /* <---- INTRO LOGIN BACKGROUND IMAGES -----> */
   // static const introBackground1 = 'https://i.imgur.com/YQ9twZx.png';

@@ -38,7 +38,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   _gotoLoginSignUp() {
-    Get.toNamed(AppRoutes.introLogin);
+    Get.toNamed(AppRoutes.signup);
   }
 
   @override

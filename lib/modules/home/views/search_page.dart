@@ -1,5 +1,14 @@
+import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:produce_pos/core/components/high_lighted_button.dart';
+import 'package:produce_pos/data/models/product_model.dart';
+import 'package:produce_pos/modules/home/controller/products_controller.dart';
+import 'package:produce_pos/modules/home/controller/search_controller.dart';
 
 import '../../../core/components/app_back_button.dart';
 import '../../../core/constants/app_colors.dart';
@@ -28,6 +37,8 @@ class SearchPage extends StatelessWidget {
   }
 }
 
+final _controller = Get.put(SearchControllerr());
+
 class _RecentSearchList extends StatelessWidget {
   const _RecentSearchList();
 
@@ -41,25 +52,36 @@ class _RecentSearchList extends StatelessWidget {
                 const EdgeInsets.symmetric(horizontal: AppDefaults.padding),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Recent Search',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Colors.black,
-                    ),
-              ),
+              child: Obx(() => Text(
+                    _controller.filteredProducts.isEmpty
+                        ? 'Recent Search'
+                        : "Result Items",
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Colors.black,
+                        ),
+                  )),
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.only(top: 16),
-              itemBuilder: (context, index) {
-                return const SearchHistoryTile();
-              },
-              separatorBuilder: (context, index) => const Divider(
-                thickness: 0.1,
-              ),
-              itemCount: 16,
-            ),
+            child: Obx(() => ListView.separated(
+                  padding: const EdgeInsets.only(top: 16),
+                  itemBuilder: (context, index) {
+                    if (_controller.filteredProducts.isEmpty) {
+                      return SearchHistoryTile(
+                        term: _controller.recentSearches[index],
+                      );
+                    } else {
+                      return SearchResultTile(
+                          product: _controller.filteredProducts[index]);
+                    }
+                  },
+                  separatorBuilder: (context, index) => const Divider(
+                    thickness: 0.1,
+                  ),
+                  itemCount: _controller.filteredProducts.isEmpty
+                      ? _controller.recentSearches.length
+                      : _controller.filteredProducts.length,
+                )),
           )
         ],
       ),
@@ -67,11 +89,13 @@ class _RecentSearchList extends StatelessWidget {
   }
 }
 
+TextEditingController searchTextController = TextEditingController();
+
 class _SearchPageHeader extends StatelessWidget {
   const _SearchPageHeader();
-
   @override
   Widget build(BuildContext context) {
+    Timer? _debounceTimer;
     return Padding(
       padding: const EdgeInsets.all(AppDefaults.padding),
       child: Row(
@@ -84,6 +108,7 @@ class _SearchPageHeader extends StatelessWidget {
                 /// Search Box
                 Form(
                   child: TextFormField(
+                    controller: searchTextController,
                     decoration: InputDecoration(
                       hintText: 'Search',
                       prefixIcon: Padding(
@@ -97,38 +122,35 @@ class _SearchPageHeader extends StatelessWidget {
                         ),
                       ),
                       prefixIconConstraints: const BoxConstraints(),
+                      suffix: Padding(
+                        padding: EdgeInsets.all(AppDefaults.padding / 2),
+                        child: InkWell(
+                          onTap: () {
+                            searchTextController.text = '';
+                            _controller.filteredProducts.clear();
+                          },
+                          child: Icon(
+                            Icons.cancel_sharp,
+                            color: AppColors.primary.withOpacity(0.6),
+                          ),
+                        ),
+                      ),
                       contentPadding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
                     textInputAction: TextInputAction.search,
                     autofocus: true,
-                    onChanged: (String? value) {},
+                    onChanged: (value) {
+                      _debounceTimer?.cancel();
+                      _debounceTimer = Timer(const Duration(seconds: 2), () {
+                        _controller.queryProducts(value);
+                      });
+                    },
                     onFieldSubmitted: (v) {
-                      Navigator.pushNamed(context, AppRoutes.searchResult);
+                      _controller.queryProducts(v);
                     },
                   ),
                 ),
-                Positioned(
-                  right: 0,
-                  height: 56,
-                  child: SizedBox(
-                    width: 56,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        UiUtil.openBottomSheet(
-                          context: context,
-                          widget: const ProductFiltersDialog(),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: SvgPicture.asset(AppIcons.filter),
-                    ),
-                  ),
-                )
               ],
             ),
           ),
@@ -138,30 +160,96 @@ class _SearchPageHeader extends StatelessWidget {
   }
 }
 
-class SearchHistoryTile extends StatelessWidget {
-  const SearchHistoryTile({
+class SearchResultTile extends StatelessWidget {
+  final Product product;
+  const SearchResultTile({
     super.key,
+    required this.product,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 16,
-        ),
-        child: Row(
-          children: [
-            Text(
-              'Vegetables',
-              style: Theme.of(context).textTheme.bodyMedium,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
+      child: Card(
+        elevation: 3,
+        color: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 40.h),
+          child: InkWell(
+            onTap: () {},
+            child: ListTile(
+              enableFeedback: false,
+              leading: CachedNetworkImage(
+                width: 200.h,
+                height: 400.h,
+                imageUrl: product.carouselImages,
+                fit: BoxFit.fill,
+              ),
+              title: Text(
+                '${product.productName}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
-            const Spacer(),
-            SvgPicture.asset(AppIcons.searchTileArrow),
-          ],
+          ),
         ),
+      ),
+      //                Row(
+      //   children: [
+      //     Text(
+      //       product.productName,
+      //       style: Theme.of(context).textTheme.bodyMedium,
+      //     ),
+      //     const Spacer(),
+      //     InkWell(
+      //         borderRadius: BorderRadius.circular(100),
+      //         onTap: () {
+
+      //         },
+      //         child: Padding(
+      //           padding: EdgeInsets.all(6.spMax),
+      //           child: SvgPicture.asset(AppIcons.searchTileArrow),
+      //         )),
+      //   ],
+      // ),
+    );
+  }
+}
+
+class SearchHistoryTile extends StatelessWidget {
+  final String term;
+  const SearchHistoryTile({
+    super.key,
+    required this.term,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 8,
+        horizontal: 16,
+      ),
+      child: Row(
+        children: [
+          Text(
+            term,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const Spacer(),
+          InkWell(
+              borderRadius: BorderRadius.circular(100),
+              onTap: () {
+                searchTextController.text = term;
+                _controller.queryProducts(term);
+              },
+              child: Padding(
+                padding: EdgeInsets.all(6.spMax),
+                child: SvgPicture.asset(AppIcons.searchTileArrow),
+              )),
+        ],
       ),
     );
   }

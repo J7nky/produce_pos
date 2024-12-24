@@ -7,12 +7,12 @@ class PriceAndQuantityRow extends StatefulWidget {
   const PriceAndQuantityRow({
     super.key,
     required this.currentPrice,
-    required this.orginalPrice,
+    // required this.orginalPrice,
     required this.quantity,
   });
 
   final double currentPrice;
-  final double orginalPrice;
+  // final double orginalPrice;
   final int quantity;
 
   @override
@@ -20,27 +20,24 @@ class PriceAndQuantityRow extends StatefulWidget {
 }
 
 class _PriceAndQuantityRowState extends State<PriceAndQuantityRow> {
-  int quantity = 1;
+  // int quantity = 1;
 
-  onQuantityIncrease() {
-    quantity++;
-    setState(() {});
-  }
+  // onQuantityIncrease() {
+  //   quantity++;
+  //   setState(() {});
+  // }
 
-  onQuantityDecrease() {
-    if (quantity > 1) {
-      quantity--;
-      setState(() {});
-    }
-  }
+  // onQuantityDecrease() {
+  //   if (quantity > 1) {
+  //     quantity--;
+  //     setState(() {});
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    quantity = widget.quantity;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {});
-    });
+    // quantity = widget.quantity;
   }
 
   @override
@@ -49,17 +46,9 @@ class _PriceAndQuantityRowState extends State<PriceAndQuantityRow> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         /* <---- Price -----> */
+
         Text(
-          '\$30',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.lineThrough,
-              ),
-        ),
-        const SizedBox(width: AppDefaults.padding),
-        Text(
-          '\$20',
+          "${widget.currentPrice} / ${widget.quantity}",
           style: Theme.of(context)
               .textTheme
               .headlineSmall
@@ -68,30 +57,30 @@ class _PriceAndQuantityRowState extends State<PriceAndQuantityRow> {
         const Spacer(),
 
         /* <---- Quantity -----> */
-        Row(
-          children: [
-            IconButton(
-              onPressed: onQuantityIncrease,
-              icon: SvgPicture.asset(AppIcons.addQuantity),
-              constraints: const BoxConstraints(),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '$quantity',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-              ),
-            ),
-            IconButton(
-              onPressed: onQuantityDecrease,
-              icon: SvgPicture.asset(AppIcons.removeQuantity),
-              constraints: const BoxConstraints(),
-            ),
-          ],
-        )
+        // Row(
+        //   children: [
+        //     IconButton(
+        //       onPressed: onQuantityIncrease,
+        //       icon: SvgPicture.asset(AppIcons.addQuantity),
+        //       constraints: const BoxConstraints(),
+        //     ),
+        //     Padding(
+        //       padding: const EdgeInsets.all(8.0),
+        //       child: Text(
+        //         '$quantity',
+        //         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+        //               fontWeight: FontWeight.bold,
+        //               color: Colors.black,
+        //             ),
+        //       ),
+        //     ),
+        //     IconButton(
+        //       onPressed: onQuantityDecrease,
+        //       icon: SvgPicture.asset(AppIcons.removeQuantity),
+        //       constraints: const BoxConstraints(),
+        //     ),
+        //   ],
+        // )
       ],
     );
   }

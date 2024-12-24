@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:produce_pos/modules/home/components/categories_section.dart';
+import 'package:produce_pos/modules/home/components/favourite_section.dart';
+import 'package:produce_pos/modules/home/components/home_products_section.dart';
 import '../../../core/constants/app_icons.dart';
 
 import '../../../core/constants/app_defaults.dart';
@@ -22,7 +26,7 @@ class HomePage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.drawerPage);
+                    Get.toNamed(AppRoutes.drawerPage);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF2F6F3),
@@ -55,8 +59,17 @@ class HomePage extends StatelessWidget {
             const SliverToBoxAdapter(
               child: AdSpace(),
             ),
+            SliverToBoxAdapter(
+              child: CategoriesSection(),
+            ),
             const SliverToBoxAdapter(
               child: PopularPacks(),
+            ),
+            const SliverToBoxAdapter(
+              child: FavouriteList(),
+            ),
+            const SliverToBoxAdapter(
+              child: HomeProductSection(),
             ),
             const SliverPadding(
               padding: EdgeInsets.symmetric(vertical: AppDefaults.padding),

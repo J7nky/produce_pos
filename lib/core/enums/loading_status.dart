@@ -1,0 +1,1 @@
+enum LodadingStatus { loading, notLoading }

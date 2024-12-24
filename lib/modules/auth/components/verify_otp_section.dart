@@ -36,7 +36,7 @@ class VerifyOtpSection extends StatelessWidget {
                     Get.toNamed(AppRoutes.entryPoint);
                   }
                   formKey.currentState!.validate();
-                  authController.verifyOTP(codeController.text, phoneNumber);
+                  authController.verifyOTP(phoneNumber, codeController.text);
                 },
                 text: "Verify".toUpperCase());
           }

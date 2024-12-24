@@ -2,8 +2,10 @@ import 'package:flag/flag_enum.dart';
 import 'package:flag/flag_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:produce_pos/core/components/high_lighted_button.dart';
+import 'package:produce_pos/core/constants/app_images.dart';
 import 'package:produce_pos/core/routes/app_routes.dart';
 import 'package:produce_pos/core/utils/validators.dart';
 import 'package:produce_pos/modules/auth/controllers/auth_controller.dart';
@@ -16,7 +18,7 @@ class SignUpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+    ScrollController scrollController = ScrollController();
     TextEditingController _phoneController = TextEditingController();
 
     return Scaffold(
@@ -35,7 +37,7 @@ class SignUpPage extends StatelessWidget {
               child: Text("Sign Up",
                   style: Theme.of(context)
                       .textTheme
-                      .headlineSmall!
+                      .headlineMedium!
                       .copyWith(color: Colors.white)
                   // TextStyle(
                   //     fontWeight: FontWeight.w600,
@@ -56,8 +58,11 @@ class SignUpPage extends StatelessWidget {
                     topRight: Radius.circular(100.r),
                   ),
                 ),
-                child: ListView(children: [
-                  SizedBox(),
+                child: ListView(controller: scrollController, children: [
+                  SizedBox(
+                    height: 00.spMax,
+                  ),
+
                   Padding(
                     padding: const EdgeInsets.only(
                         left: AppDefaults.padding,
@@ -74,7 +79,12 @@ class SignUpPage extends StatelessWidget {
                               .bodyLarge!
                               .copyWith(color: Colors.grey))),
                   SizedBox(
-                    height: 30.spMax,
+                    height: 25.spMax,
+                  ),
+                  SvgPicture.asset(
+                    AppImages.loginIllustration1,
+                    height: 300.spMax,
+                    width: 300.spMax,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(AppDefaults.padding),
@@ -88,6 +98,13 @@ class SignUpPage extends StatelessWidget {
                         controller: _phoneController,
                         maxLength: 8,
                         keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                            scrollController.animateTo(
+                              scrollController.position.maxScrollExtent,
+                              duration: Duration(seconds: 1),
+                              curve: Curves.easeOut,
+                            );
+                        },
                         decoration: InputDecoration(
                           focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.green)),
@@ -116,6 +133,7 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   Obx(() {
                     if (authController.isLoading.value) {
                       return AlertDialog(
@@ -141,28 +159,28 @@ class SignUpPage extends StatelessWidget {
                           });
                     }
                   }),
-                  SizedBox(
-                    height: 30.spMax,
-                  ),
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Alreay Registered??",
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        TextButton(
-                            onPressed: () async {},
-                            child: Text("Sign Up",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(color: Colors.green))),
-                      ],
-                    ),
-                  ),
+                  // SizedBox(
+                  //   height: 30.spMax,
+                  // ),
+                  // Center(
+                  //   child: Column(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     crossAxisAlignment: CrossAxisAlignment.center,
+                  //     children: [
+                  //       Text(
+                  //         "Alreay Registered??",
+                  //         style: Theme.of(context).textTheme.bodyLarge,
+                  //       ),
+                  //       TextButton(
+                  //           onPressed: () async {},
+                  //           child: Text("Sign Up",
+                  //               style: Theme.of(context)
+                  //                   .textTheme
+                  //                   .titleMedium!
+                  //                   .copyWith(color: Colors.green))),
+                  //     ],
+                  //   ),
+                  // ),
                 ]),
               ),
             )

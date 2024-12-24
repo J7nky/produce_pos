@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/enums/dummy_order_status.dart';
+import '../../../../core/enums/order_status.dart';
 import '../../../../core/routes/app_routes.dart';
 import 'order_preview_tile.dart';
 

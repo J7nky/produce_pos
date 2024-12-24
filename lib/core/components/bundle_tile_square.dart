@@ -1,17 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:produce_pos/core/utils/price_generator.dart';
+import 'package:produce_pos/data/models/product_model.dart';
 
 import '../constants/constants.dart';
-import '../../data/models/dummy_bundle_model.dart';
 import '../routes/app_routes.dart';
 import 'network_image.dart';
 
-class BundleTileSquare extends StatelessWidget {
+class BundleTileSquare extends StatefulWidget {
   const BundleTileSquare({
     super.key,
-    required this.data,
+    required this.product,
   });
 
-  final BundleModel data;
+  final Product product;
+
+  @override
+  State<BundleTileSquare> createState() => _BundleTileSquareState();
+}
+
+class _BundleTileSquareState extends State<BundleTileSquare> {
+  double fakePrice = 0;
+  Future<void> getFakePriceAsync(Product product) async {
+    double price = await PriceGenerator.getFakePrice(product);
+    setState(() {
+      fakePrice = price;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getFakePriceAsync(widget.product);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +42,7 @@ class BundleTileSquare extends StatelessWidget {
       borderRadius: AppDefaults.borderRadius,
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, AppRoutes.bundleProduct);
+          Get.toNamed(AppRoutes.productDetails, arguments: widget.product);
         },
         borderRadius: AppDefaults.borderRadius,
         child: Container(
@@ -39,7 +61,7 @@ class BundleTileSquare extends StatelessWidget {
                 child: AspectRatio(
                   aspectRatio: 1 / 1,
                   child: NetworkImageWithLoader(
-                    data.cover,
+                    widget.product.carouselImages,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -49,7 +71,7 @@ class BundleTileSquare extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    data.name,
+                    widget.product.productName,
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
@@ -58,7 +80,7 @@ class BundleTileSquare extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    data.itemNames.join(','),
+                    widget.product.description,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -68,16 +90,16 @@ class BundleTileSquare extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '\$${data.price.toInt()}',
+                    '\$${widget.product.price}',
                     style: Theme.of(context)
                         .textTheme
-                        .titleLarge
+                        .titleSmall
                         ?.copyWith(color: Colors.black),
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '\$${data.mainPrice}',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    '\$${fakePrice}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           decoration: TextDecoration.lineThrough,
                         ),
                   ),

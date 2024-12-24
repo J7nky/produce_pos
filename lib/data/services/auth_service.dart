@@ -7,9 +7,7 @@ class AuthService {
   // Step 1: Send OTP to the user's phone number
   Future<void> sendOtpToPhone(String phoneNumber) async {
     try {
-      await _client.auth.signInWithOtp(phone: phoneNumber).then((v) {
-        print("success");
-      });
+      await _client.auth.signInWithOtp(phone: phoneNumber);
     } on AuthApiException catch (e) {
       print('Failed to send OTP: $e');
 
@@ -21,26 +19,49 @@ class AuthService {
   }
 
   // Step 2: Verify OTP and sign in
-  Future<void> verifyOtpAndSignIn(String phoneNumber, String otp) async {
+  Future verifyOtpAndSignIn(String phoneNumber, String otp) async {
     try {
-      final response = await _client.auth.verifyOTP(
+      final AuthResponse response = await _client.auth.verifyOTP(
         phone: phoneNumber,
         token: otp,
         type: OtpType.sms,
       );
-
-      // If the response contains an error, handle it
-      if (response.session == null) {
-      } else if (response.session != null) {
-        print('User signed in successfully!');
-        // You can access session or user details if necessary
-        print('Access Token: ${response.session!.accessToken}');
-      } else {
-        print('Verification failed, no session found.');
-      }
+    } on AuthException catch (e) {
+      // Rethrow the AuthException to be caught by the caller
+      throw e;
     } catch (e) {
-      throw Exception('Failed to verify OTP and sign in: $e');
+      // Handle other exceptions if necessary
+      throw e;
     }
+  }
+
+// Function to check if the user exists in the Auth table
+  Future<bool> checkUserExistsInAuthTable(String phoneNumber) async {
+    final response = await Supabase.instance.client
+        .from('Auth') // Replace 'auth' with your actual table name
+        .select('user_id')
+        .eq('phone_number', phoneNumber)
+        .maybeSingle();
+
+    if (response != null) {
+      return true;
+    }
+
+    // If data is null, user does not exist
+    return false;
+  }
+
+  Future<bool> createAuthEntry(String userId, String phoneNumber) async {
+    try {
+      final response = await Supabase.instance.client.from('Auth').insert({
+        'user_id': userId,
+        'phone_number': phoneNumber,
+      }).select();
+    } catch (e) {
+      print("Error creating auth entry: $e");
+    }
+
+    return true; // Successfully created
   }
 
   Future<List<Product>> fetchData(String tableName) async {

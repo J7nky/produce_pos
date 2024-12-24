@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:produce_pos/core/components/app_back_button.dart';
 
 import 'package:produce_pos/modules/auth/components/otp_section.dart';
 import 'package:produce_pos/modules/auth/components/verify_otp_section.dart';
@@ -19,17 +20,24 @@ class NumberVerificationPage extends StatefulWidget {
 class _NumberVerificationPageState extends State<NumberVerificationPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  final authController = Get.find<AuthController>();
 
   @override
   void initState() {
     super.initState();
 
-    // Initialize the animation controller with a given duration
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(
-          seconds: 5), // Set to the total duration of your Lottie animation
-    );
+    // Initialize the AnimationController
+    _controller = AnimationController(vsync: this);
+
+    // Listen for when the animation reaches 50% and reset
+    _controller.addListener(() {
+      if (authController.status == AuthenticationStatus.authenticated) {
+        _controller.forward();
+      } else if (_controller.value >= 0.5) {
+        _controller.reset();
+        _controller.animateTo(1);
+      }
+    });
   }
 
   @override
@@ -38,45 +46,36 @@ class _NumberVerificationPageState extends State<NumberVerificationPage>
     super.dispose();
   }
 
-  // Function to animate to a specific time
-  void animateToSpecificTime(double progress) {
-    _controller.animateTo(progress); // progress should be between 0.0 and 1.0
-  }
-
-  // Function to animate from a specific time
-  void animateFromSpecificTime(double progress) {
-    // Set the starting point of the animation
-    _controller.value = progress;
-    // Start the animation from the given progress
-    _controller.forward();
-  }
-
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController codeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final String phoneNumber = Get.arguments;
-    final authController = Get.find<AuthController>();
 
     return Scaffold(
+        appBar: AppBar(
+          leading: const AppBackButton(),
+          title: const Text('Verify OTP'),
+        ),
         backgroundColor: AppColors.scaffoldWithBoxBackground,
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                LottieWidget(),
-                OtpSection(
-                    phoneNumber: phoneNumber,
-                    formKey: formKey,
-                    codeController: codeController),
-                VerifyOtpSection(
-                    authController: authController,
-                    formKey: formKey,
-                    codeController: codeController,
-                    phoneNumber: phoneNumber),
-              ],
-            ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 50.spMax,
+              ),
+              LottieWidget(),
+              OtpSection(
+                  phoneNumber: phoneNumber,
+                  formKey: _formKey,
+                  codeController: codeController),
+              VerifyOtpSection(
+                  authController: authController,
+                  formKey: _formKey,
+                  codeController: codeController,
+                  phoneNumber: phoneNumber),
+            ],
           ),
         ));
   }
@@ -84,13 +83,16 @@ class _NumberVerificationPageState extends State<NumberVerificationPage>
   LottieBuilder LottieWidget() {
     return LottieBuilder.asset(
       'assets/lottie/lock.json',
-      height: 200.spMax,
-      width: 200.spMax,
+      height: 250.spMax,
+      width: 250.spMax,
       controller: _controller,
+      repeat: false,
       onLoaded: (composition) {
-        animateToSpecificTime(0.5);
-        // Set the animation duration based on the Lottie animation's duration
+        // Set the duration of the controller to match the animation's duration
         _controller.duration = composition.duration;
+
+        // Start the animation
+        _controller.forward(from: 0.0);
       },
     );
   }

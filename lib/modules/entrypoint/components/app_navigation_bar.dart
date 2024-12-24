@@ -16,6 +16,7 @@ class AppBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
+      clipBehavior: Clip.hardEdge,
       shape: const CircularNotchedRectangle(),
       notchMargin: AppDefaults.margin,
       color: AppColors.scaffoldBackground,
@@ -29,7 +30,7 @@ class AppBottomNavigationBar extends StatelessWidget {
             onTap: () => onNavTap(0),
           ),
           BottomAppBarItem(
-            name: 'Menu',
+            name: 'Trade',
             iconLocation: AppIcons.menu,
             isActive: currentIndex == 1,
             onTap: () => onNavTap(1),

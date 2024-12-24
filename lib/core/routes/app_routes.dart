@@ -2,10 +2,12 @@ class AppRoutes {
   /// The Initial Page
   static const introLogin = '/intro_login';
   static const onboarding = '/onboarding';
+  static const landingRoute = '/landingRoute';
 
   /* <---- Login, Signup -----> */
   static const login = '/login';
   static const signup = '/signup';
+  static const registrationForm = '/registrationForm';
   static const loginOrSignup = '/loginOrSignup';
   static const numberVerification = '/numberVerification';
   static const forgotPassword = '/forgotPassword';
@@ -60,7 +62,7 @@ class AppRoutes {
   static const review = '/review';
   static const submitReview = '/submitReview';
   // Not Needed
-  // static const errorPage = '/errorPage';
+  static const errorPage = '/errorPage';
 
   /* <---- Drawer Page -----> */
   static const drawerPage = '/drawerPage';

@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:produce_pos/data/models/cart_model.dart';
+import 'package:produce_pos/data/models/product_model.dart';
+import 'package:produce_pos/data/services/favourite_service.dart';
+import 'package:produce_pos/modules/cart/components/edit_quantity.dart';
+import 'package:produce_pos/modules/cart/controllers/cart_items_controller.dart';
 
 import '../../../core/components/app_back_button.dart';
 import '../../../core/components/buy_now_row_button.dart';
@@ -9,9 +15,12 @@ import '../../../core/constants/app_defaults.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   const ProductDetailsPage({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final cartController = Get.put(CartController());
+    FavoriteService favoriteService = FavoriteService();
+    final Product product = Get.arguments;
+    print(product.color);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -22,20 +31,18 @@ class ProductDetailsPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppDefaults.padding),
           child: BuyNowRow(
-            onBuyButtonTap: () {},
-            onCartButtonTap: () {},
+            onBuyButtonTap: () {
+              cartController.addItem(CartModel(product, 1));
+            },
+            product: product,
           ),
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const ProductImagesSlider(
-              images: [
-                'https://i.imgur.com/3o6ons9.png',
-                'https://i.imgur.com/3o6ons9.png',
-                'https://i.imgur.com/3o6ons9.png',
-              ],
+            ProductImagesSlider(
+              images: [product.carouselImages],
             ),
             SizedBox(
               width: double.infinity,
@@ -45,23 +52,22 @@ class ProductDetailsPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Cauliflower Bangladeshi',
+                      product.productName,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text('Weight: 5Kg'),
                   ],
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppDefaults.padding),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppDefaults.padding),
               child: PriceAndQuantityRow(
-                currentPrice: 20,
-                orginalPrice: 30,
-                quantity: 2,
+                currentPrice: product.price,
+                // orginalPrice: 30,
+                quantity: 1,
               ),
             ),
             const SizedBox(height: 8),
@@ -73,16 +79,14 @@ class ProductDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Product Details',
+                    'Product Description',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Duis aute veniam veniam qui aliquip irure duis sint magna occaecat dolore nisi culpa do. Est nisi incididunt aliquip  commodo aliqua tempor.',
-                  ),
+                  Text(product.description),
                 ],
               ),
             ),

@@ -28,7 +28,7 @@ class TitleAndActionButton extends StatelessWidget {
             style: isHeadline
                 ? Theme.of(context)
                     .textTheme
-                    .headlineSmall
+                    .titleLarge
                     ?.copyWith(color: Colors.black)
                 : Theme.of(context)
                     .textTheme

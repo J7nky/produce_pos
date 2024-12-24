@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/constants.dart';
-import '../../../../core/enums/dummy_order_status.dart';
+import '../../../../core/enums/order_status.dart';
 
 class OrderPreviewTile extends StatelessWidget {
   const OrderPreviewTile({

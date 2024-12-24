@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/constants/constants.dart';
 import '../../../core/routes/app_routes.dart';
@@ -48,7 +50,10 @@ class ProfileMenuOptions extends StatelessWidget {
           ProfileListTile(
             title: 'Logout',
             icon: AppIcons.profileLogout,
-            onTap: () => Navigator.pushNamed(context, AppRoutes.loginOrSignup),
+            onTap: () {
+              Supabase.instance.client.auth.signOut();
+              Get.offNamed(AppRoutes.introLogin);
+            },
           ),
         ],
       ),

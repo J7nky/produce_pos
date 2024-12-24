@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_defaults.dart';
@@ -44,8 +45,7 @@ class IntroPageBodyArea extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, AppRoutes.loginOrSignup),
+                    onPressed: () => Get.offNamed(AppRoutes.entryPoint),
                     child: const Text('Discover our store'),
                   ),
                 ),
@@ -53,8 +53,7 @@ class IntroPageBodyArea extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, AppRoutes.signup),
+                    onPressed: () => Get.toNamed(AppRoutes.signup),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
                       backgroundColor: Colors.white,

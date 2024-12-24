@@ -43,8 +43,8 @@ class OtpSection extends StatelessWidget {
           child: Form(
             key: formKey,
             child: PinCodeTextField(
-              key: ValueKey('otp_field'),
-              validator: Validators.requiredWithFieldName("*Otp code"),
+              key: const ValueKey('otp_field'),
+              validator: Validators.requiredWithFieldName("*Otp code").call,
               appContext: context,
               pastedTextStyle: const TextStyle(
                 color: Colors.green,
